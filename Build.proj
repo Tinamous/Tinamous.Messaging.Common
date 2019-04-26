@@ -1,0 +1,176 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="BuildProperties.proj" />
+
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)'=='' ">Debug</Configuration>
+    <CCNetLabel Condition=" '$(CCNetLabel)' == '' ">0.0.0.1</CCNetLabel>
+    <ReportsFolder>.\Build\Reports\</ReportsFolder>
+    <ReleasesFolder>.\Deploy\</ReleasesFolder>
+  </PropertyGroup>
+  
+  <ItemGroup>
+    <NupkgDeploymentFiles Include="**\*.nupkg" Exclude="Packages\**\*.nupkg" />
+  </ItemGroup>
+
+  <!-- ============================================================ -->
+  <!-- Clean                                                        -->
+  <!-- ============================================================ -->
+	<Target Name="Clean">
+		<Message Text="Clean $(Configuration)" />
+		<MSBuild Projects="$(ProjectSolution)" Properties="Configuration=$(Configuration)" Targets="Clean"/>
+    <!-- TODO: Also remove all the nuget files not in the packages folder. -->
+    <Message Text="Removing Non-package Nupkg files: %(NupkgDeploymentFiles.FileName)" />
+    <!-- TODO! -->
+	</Target>
+
+  <!-- ============================================================ -->
+  <!-- Build                                                        -->
+  <!-- ============================================================ -->
+	<Target Name="Build" >
+		<Message Text="Building $(Configuration)" />
+
+    <!-- Update the version file in the web application -->
+    <CallTarget Targets="UpdateAssemblyInfo" />
+    <Attrib Files="$(VerisonFile)" Normal="true"/>
+    <WriteLinesToFile File="$(VerisonFile)" Lines="$(CCNetLabel)" Overwrite="true" />
+
+    <Message Text="Publish to octopus at $(OctoPackPublishPackageToHttp)" />
+		<MSBuild Projects="$(ProjectSolution)" Properties="Configuration=$(Configuration);RunOctoPack=$(RunOctoPack);OctoPackPublishPackageToHttp=$(OctoPackPublishPackageToHttp);OctoPackPublishApiKey=$(OctoPackPublishApiKey)" />
+	</Target>
+ 
+  <!-- ============================================================ -->
+	<!-- Run Unit Tests                                               -->
+  <!-- ============================================================ -->
+	<Target Name="UnitTest">
+    
+		<Message Text="Unit Tests..." />
+		<RemoveDir Directories="$(ReportsFolder)UnitTests" />
+		<MakeDir Directories="$(ReportsFolder)UnitTests" />
+
+		<CreateItem  Include=".\**\bin\$(Configuration)\*.UnitTests.dll;.\**\bin\$(Configuration)\*.Tests.dll" >
+		           <Output TaskParameter="Include" ItemName="UnitTestDlls"/>
+		</CreateItem>
+
+		<Message Text="Unit Test Assemblies: %(UnitTestDlls.FileName)" />
+
+    <Exec Command='$(NUnitExe) "%(UnitTestDlls.FullPath)" /exclude=IntegrationTest,IntegrationTests /xml="$(ReportsFolder)UnitTests\%(UnitTestDlls.FileName).UnitTests.xml" ' />
+	</Target>
+
+  <!-- ============================================================ -->
+	<!-- Run Integration Tests -->
+  <!-- ============================================================ -->
+	<Target Name="IntegrationTest">
+    
+		<Message Text="Integration Tests..." />		
+		<RemoveDir Directories="$(ReportsFolder)IntegrationTests" />
+		<MakeDir Directories="$(ReportsFolder)IntegrationTests" />
+
+		<CreateItem  Include=".\**\bin\$(Configuration)\*.IntegrationTests.dll" >
+		           <Output TaskParameter="Include" ItemName="IntegrationTestDlls"/>
+		</CreateItem>
+
+		<Message Text="Integration Test Assemblies: %(IntegrationTestDlls.FileName)" />
+
+    <Exec Command='$(NUnitExe) "%(IntegrationTestDlls.FullPath)" /xml="$(ReportsFolder)IntegrationTests\%(IntegrationTestDlls.FileName).IntegrationTests.xml" ' />
+	</Target>
+
+  <!-- ============================================================ -->
+  <!-- Run System Tests                                             -->
+  <!-- ============================================================ -->
+  <Target Name="SystemTest">
+
+    <Message Text="Building System Tests..." />
+    <MSBuild Projects="$(SystemTestSolution)" Properties="Configuration=$(Configuration)" />
+    
+    <Message Text="Running System Tests..." />
+    <RemoveDir Directories="$(ReportsFolder)SystemTests" />
+    <MakeDir Directories="$(ReportsFolder)SystemTests" />
+
+    <CreateItem  Include=".\**\bin\$(Configuration)\*.SystemTests.dll" >
+      <Output TaskParameter="Include" ItemName="SystemTestDlls"/>
+    </CreateItem>
+
+    <Message Text="System Test Assemblies: %(SystemTestDlls.FileName)" />
+
+    <Exec Command='$(NUnitExe) "%(SystemTestDlls.FullPath)" /xml="$(ReportsFolder)SystemTests\%(UnitTestDlls.FileName).SystemTests.xml" ' />
+  </Target>
+
+  <!-- ============================================================ -->
+  <!-- Run Analysis tasks                                           -->
+  <!-- ============================================================ -->
+	<Target Name="Analyze">
+		<Message Text="Analyze" />
+
+		<CallTarget Targets="FxCopAnalysis" />
+		<!-- TODO: NDepend, NCover, StyleCop & Simian -->
+	</Target>
+
+  <!-- ============================================================ -->
+  <!-- FxCop Analysis                                               -->
+  <!-- ============================================================ -->
+	<Target Name="FxCopAnalysis">
+		<Message Text="FxCop Analysis" />
+
+		<RemoveDir Directories="$(ReportsFolder)FxCop" />
+		<MakeDir Directories="$(ReportsFolder)FxCop" />
+
+    <!--
+		<FxCop 
+			ProjectFile=".\Build\Forex.FxCop"
+			AnalysisReportFileName="$(ReportsFolder)FxCop\FxCopResults.xml"
+			DependencyDirectories="$(MSBuildCommunityTasksPath)"
+			FailOnError="False"
+			ApplyOutXsl="False"
+			ToolPath=".\Support\Microsoft FxCop 1.36"
+		/>
+    -->
+
+	</Target>
+
+  <!-- ============================================================ -->
+  <!-- Update the Version and update the Setup projects to reflect the change. -->
+  <!-- ============================================================ -->
+  <Target Name="Version">
+		
+    <!-- Create the versions file from the CCNet build number. -->
+    <Attrib Files="$(VerisonFile)" Normal="true"/>
+    <WriteLinesToFile File="$(VerisonFile)" Lines="$(CCNetLabel)" Overwrite="true" />
+
+    <Version VersionFile="$(VerisonFile)" RevisionType="None">
+      <Output TaskParameter="Major" PropertyName="Major" />
+      <Output TaskParameter="Minor" PropertyName="Minor" />
+      <Output TaskParameter="Build" PropertyName="Build" />
+      <Output TaskParameter="Revision" PropertyName="Revision" />
+    </Version>
+
+    <CreateProperty Value="$(Major).$(Minor).$(Build).$(Revision)">
+      <Output TaskParameter="Value" PropertyName="AppVersion" />
+    </CreateProperty>
+
+    <Message Text="App Version: $(AppVersion)"/>
+  </Target>
+
+  <!-- ============================================================ -->
+  <!-- Create AssemblyInfo file with version details                -->
+  <!-- ============================================================ -->
+  <Target Name="UpdateAssemblyInfo">
+    <Message Text="Setting Application version to $(CCNetLabel)" />
+    
+    <ItemGroup>
+      <!-- Only update the SharedAssemblyInfo file(s).-->
+      <AllAssemblyVersionInfos Include=".\**\SharedAssemblyVersionInfo.cs"/>
+    </ItemGroup>
+    <Attrib Files="@(AllAssemblyVersionInfos)" ReadOnly="false"/>  
+
+    <AssemblyInfo AssemblyTitle="" 
+                  AssemblyProduct="" 
+                  AssemblyCompany="" 
+                  AssemblyCopyright=""
+                  AssemblyVersion="$(CCNetLabel)" 
+                  AssemblyFileVersion="$(CCNetLabel)" 
+                  CodeLanguage="CS"
+                  OutputFile="%(AllAssemblyVersionInfos.FullPath)" />
+  </Target>
+
+</Project>

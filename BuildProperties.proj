@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <PropertyGroup>
+    <MSBuildCommunityTasksPath>.</MSBuildCommunityTasksPath>
+  </PropertyGroup>
+  <Import Project=".build\MSBuild.Community.Tasks.Targets" />
+
+  <!-- Project files -->
+  <PropertyGroup>
+    <ProjectSolution>Tinamous.Messaging.Common.sln</ProjectSolution>
+    <SystemTestSolution>Tinamous.Messaging.Common.SystemTests.sln</SystemTestSolution>
+    <DeploymentProject></DeploymentProject>
+    <BuildOutputFolder>M:\Tinamous.Messaging.Common</BuildOutputFolder>
+    <VerisonFile>.\Version.txt</VerisonFile>
+    <Configuration Condition=" '$(Configuration)'=='' ">Debug</Configuration>
+    <CCNetLabel Condition=" '$(CCNetLabel)' == '' ">0.0.0.1</CCNetLabel>
+  </PropertyGroup>
+
+  <!-- Deployment Settings -->
+  <!-- Expect MyGetServer and MyGetApiKey injected properties -->
+  <PropertyGroup>
+    <!-- Local folder for NuGet packages to be copied to -->
+    <!-- This is not for deployment NuGet packages -->
+    <LocalNuGetServer Condition=" '$(LocalNuGetServer)'=='' ">C:\NuGetDev</LocalNuGetServer>
+    <NuGetOutputDirectory>.\Build\NuGetPackages</NuGetOutputDirectory>
+  </PropertyGroup>
+
+  <!-- List of projects that should have NuGet packages created for them -->
+  <ItemGroup>
+	<NugetProjects Include=".\Tinamous.Messaging.Common\AnalysisUK.Tinamous.Messaging.Common.csproj" />
+  </ItemGroup>
+
+  <!-- Tools -->
+  <PropertyGroup>
+    <NUnitExe>packages\NUnit.Runners.2.6.4\tools\NUnit-Console.exe /nologo /framework:net-4.0</NUnitExe>
+    <NuGet>packages\NuGet.CommandLine.2.8.5\tools\NuGet.exe</NuGet>
+  </PropertyGroup>  
+</Project>

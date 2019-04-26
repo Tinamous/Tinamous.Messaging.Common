@@ -1,0 +1,27 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="4.0">
+  <Import Project="BuildProperties.proj" />
+
+  <!-- ============================================================ -->
+  <!-- Create a release in Octopus                                  -->
+  <!-- ApiKey for Octopus account must be specified                 -->
+  <!-- ============================================================ -->
+  <Target Name="CreateOctopusRelease">
+    <Message Text="Creating Octopus Release" Importance="high" />
+    <!-- Don't specify a version or force so that if the package has not updated this step will fail -->
+    <!-- Will create a release using the latest package and get the version number from that -->
+    <Exec Command='$(PathToOctopusTools)Octo.exe create-release --server=$(OctopusServer)/api --project="$(OctopusProject)" --apiKey=$(ApiKey) ' />
+  </Target>
+
+  <!-- ============================================================ -->
+  <!-- Deploy using Octopus                                         -->
+  <!-- ApiKey for Octopus account must be specified                 -->
+  <!-- OctopusEnvironment must me specified                         -->
+  <!-- ============================================================ -->
+  <Target Name="OctopusDeploy">
+    <Message Text="Deploying to $(OctopusEnvironment) using Octopus Deploy server $(OctopusServer)" Importance="high" />
+
+    <Message Text="Deploying Octopus Release to Staging" Importance="high" />
+    <Exec Command='$(PathToOctopusTools)Octo.exe deploy-release --server=$(OctopusServer)/api --project="$(OctopusProject)" --deployto="$(OctopusEnvironment)" --apiKey=$(ApiKey) --waitfordeployment --version=$(CCNetLabel)' />
+  </Target>
+
+</Project>
