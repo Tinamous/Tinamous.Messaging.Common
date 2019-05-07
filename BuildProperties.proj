@@ -22,17 +22,17 @@
     <!-- Local folder for NuGet packages to be copied to -->
     <!-- This is not for deployment NuGet packages -->
     <LocalNuGetServer Condition=" '$(LocalNuGetServer)'=='' ">C:\NuGetDev</LocalNuGetServer>
-    <NuGetOutputDirectory>.\Build\NuGetPackages</NuGetOutputDirectory>
+    <NuGetOutputDirectory>.\Tinamous.Messaging.Common\bin\$(Configuration)</NuGetOutputDirectory>
   </PropertyGroup>
 
   <!-- List of projects that should have NuGet packages created for them -->
   <ItemGroup>
-	<NugetProjects Include=".\Tinamous.Messaging.Common\AnalysisUK.Tinamous.Messaging.Common.csproj" />
+    <NugetProjects Include=".\Tinamous.Messaging.Common\AnalysisUK.Tinamous.Messaging.Common.csproj" />
   </ItemGroup>
 
   <!-- Tools -->
   <PropertyGroup>
-    <NUnitExe>packages\NUnit.Runners.2.6.4\tools\NUnit-Console.exe /nologo /framework:net-4.0</NUnitExe>
+    <NUnitExe>packages\NUnit.ConsoleRunner.3.9.0\tools\nunit3-Console.exe --noheader --framework=net-4.0</NUnitExe>
     <NuGet>packages\NuGet.CommandLine.2.8.5\tools\NuGet.exe</NuGet>
-  </PropertyGroup>  
+  </PropertyGroup>
 </Project>

@@ -8,11 +8,14 @@
   <!-- Prepare the nuget packages (CCNET Target)               -->
   <!-- ============================================================ -->
   <Target Name="Package">
+    <!-- Packaging now handled by VS Build -->
+    <!--
     <Message Text="Packaging NuGet packages for config:  $(Configuration)" Importance="high" />
     <RemoveDir Directories="$(NuGetOutputDirectory)" />
     <MakeDir Directories="$(NuGetOutputDirectory)" />
 
     <Exec Command='$(NuGet) pack "%(NugetProjects.FullPath)" -IncludeReferencedProjects -OutputDirectory $(NuGetOutputDirectory)' />
+    -->
   </Target>
 
   <!-- ============================================================ -->

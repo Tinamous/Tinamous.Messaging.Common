@@ -56,7 +56,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Tinamous.Messaging.Common\AnalysisUK.Tinamous.Messaging.Common.csproj">
-      <Project>{7F335B22-C86D-425E-8C0D-CFF126CDCE61}</Project>
+      <Project>{9db9029b-5374-4fe6-aad4-1716cf596509}</Project>
       <Name>AnalysisUK.Tinamous.Messaging.Common</Name>
     </ProjectReference>
   </ItemGroup>

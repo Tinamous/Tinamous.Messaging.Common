@@ -48,13 +48,13 @@
 		<RemoveDir Directories="$(ReportsFolder)UnitTests" />
 		<MakeDir Directories="$(ReportsFolder)UnitTests" />
 
-		<CreateItem  Include=".\**\bin\$(Configuration)\*.UnitTests.dll;.\**\bin\$(Configuration)\*.Tests.dll" >
-		           <Output TaskParameter="Include" ItemName="UnitTestDlls"/>
-		</CreateItem>
+	  <CreateItem  Include="**\bin\$(Configuration)\*.UnitTests.dll;**\bin\$(Configuration)\*.Tests.dll" >
+	    <Output TaskParameter="Include" ItemName="UnitTestDlls"/>
+	  </CreateItem>
 
-		<Message Text="Unit Test Assemblies: %(UnitTestDlls.FileName)" />
+	  <Message Text="Unit Test Assemblies: %(UnitTestDlls.FileName)" />
 
-    <Exec Command='$(NUnitExe) "%(UnitTestDlls.FullPath)" /exclude=IntegrationTest,IntegrationTests /xml="$(ReportsFolder)UnitTests\%(UnitTestDlls.FileName).UnitTests.xml" ' />
+	  <Exec Command='$(NUnitExe) "%(UnitTestDlls.FullPath)" --result="$(ReportsFolder)UnitTests\%(UnitTestDlls.FileName).UnitTests.xml;format=nunit2" ' />
 	</Target>
 
   <!-- ============================================================ -->
@@ -66,13 +66,13 @@
 		<RemoveDir Directories="$(ReportsFolder)IntegrationTests" />
 		<MakeDir Directories="$(ReportsFolder)IntegrationTests" />
 
-		<CreateItem  Include=".\**\bin\$(Configuration)\*.IntegrationTests.dll" >
-		           <Output TaskParameter="Include" ItemName="IntegrationTestDlls"/>
-		</CreateItem>
+	  <CreateItem  Include="**\bin\$(Configuration)\*.IntegrationTests.dll" >
+	    <Output TaskParameter="Include" ItemName="IntegrationTestDlls"/>
+	  </CreateItem>
 
-		<Message Text="Integration Test Assemblies: %(IntegrationTestDlls.FileName)" />
+	  <Message Text="Integration Test Assemblies: %(IntegrationTestDlls.FileName)" />
 
-    <Exec Command='$(NUnitExe) "%(IntegrationTestDlls.FullPath)" /xml="$(ReportsFolder)IntegrationTests\%(IntegrationTestDlls.FileName).IntegrationTests.xml" ' />
+	  <Exec Command='$(NUnitExe) "%(IntegrationTestDlls.FullPath)" --result="$(ReportsFolder)IntegrationTests\%(IntegrationTestDlls.FileName).IntegrationTests.xml;format=nunit2" ' />
 	</Target>
 
   <!-- ============================================================ -->
