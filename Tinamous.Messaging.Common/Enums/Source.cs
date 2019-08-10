@@ -137,6 +137,12 @@
 
         AlexaBot = 41,
 
+        CommandService = 42,
+
+        LocationService  = 43,
+
+        DeviceReportingService = 44,
+
         // NB: If adding don't forget to update the domain enum as well
 
         /// <summary>
