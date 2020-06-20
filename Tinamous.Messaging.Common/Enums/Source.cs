@@ -1,4 +1,6 @@
-﻿namespace AnalysisUK.Tinamous.Messaging.Common.Enums
+﻿using System;
+
+namespace AnalysisUK.Tinamous.Messaging.Common.Enums
 {
     /// <summary>
     /// Message source. Used for example to indicate the source of a measurement (web, mqtt, ---- bot).
@@ -103,6 +105,7 @@
 
         MSHealthBot = 24,
 
+        [Obsolete("Use 'Nest'")]
         NestBot = 25,
 
         PubNubBot = 26,
