@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using AnalysisUK.Tinamous.Messaging.Common.Dtos;
 using AnalysisUK.Tinamous.Messaging.Common.Dtos.Enums;
 
@@ -6,6 +7,8 @@ namespace AnalysisUK.Tinamous.Messaging.Common.Events
 {
     public class GasLeakEvent
     {
+        public Guid Id { get; set; } = Guid.NewGuid();
+
         /// <summary>
         /// Device indicating the gas leak
         /// </summary>
@@ -29,5 +32,7 @@ namespace AnalysisUK.Tinamous.Messaging.Common.Events
         public string Message { get; set; }
 
         public DateTime Date { get; set; }
+
+        public List<string> Tags { get; set; } = new List<string>();
     }
 }
