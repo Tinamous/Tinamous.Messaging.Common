@@ -1,4 +1,5 @@
 ﻿using System;
+using AnalysisUK.Tinamous.Messaging.Common.Enums;
 
 namespace AnalysisUK.Tinamous.Messaging.Common.Dtos
 {
@@ -29,5 +30,13 @@ namespace AnalysisUK.Tinamous.Messaging.Common.Dtos
         public double Elevation { get; set; }
 
         public DateTime? LastUpdated { get; set; }
+
+        /// <summary>
+        /// Where this location came from.
+        /// i.e. for a measurement where it gets the location from the user
+        /// object, this would be User. When assigned to the User object
+        /// this might be Device or Manually set.
+        /// </summary>
+        public LocationSource LocationSource { get; set; }
     }
 }
