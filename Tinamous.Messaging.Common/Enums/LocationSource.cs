@@ -6,15 +6,20 @@
     public enum LocationSource
     {
         /// <summary>
+        /// Unknown location (data previously stored)
+        /// </summary>
+        Unknown = 0,
+
+        /// <summary>
         /// Location has come from the device (i.e. with sensor measurements)
         /// No indication given as to how the device aquired its location
         /// </summary>
-        Device = 0,
+        Device = 1,
 
         /// <summary>
         /// Location come from the device via a GPS system.
         /// </summary>
-        DeviceGps=1,
+        DeviceGps =2,
 
         // Other device location identifiers.
 
