@@ -146,6 +146,8 @@ namespace AnalysisUK.Tinamous.Messaging.Common.Enums
 
         DeviceReportingService = 44,
 
+        SmartThingsBot = 45,
+
         // NB: If adding don't forget to update the domain enum as well
 
         /// <summary>
